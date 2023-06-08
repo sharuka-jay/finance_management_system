@@ -18,14 +18,13 @@
               <h2 class="text-uppercase text-center mb-5">Transaction Operations</h2>
 
               <form th:action="@{/transactions}"  method="POST">
-                <p class="text-danger" th:text="${message}"></p>
+                <p class="text-danger" th:text="${msg}"></p>
 
                 <div class="form-outline mb-4">
                   <label class="form-label" for="accountNumber">Your Account Number</label>
                   <input type="text" th:name="accountNumber"  id="accountNumber"
                          class="form-control form-control-lg"/>
-                  <input type="text" th:name="userId" th:value="${id}" id="userId" s
-                         class="form-control form-control-lg"/>
+
                 </div>
 
                 <div class="form-outline mb-4">

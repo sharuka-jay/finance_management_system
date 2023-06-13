@@ -1,6 +1,8 @@
 package com.example.account_service.repo;
 
 import com.example.account_service.model.Account;
+import com.example.account_service.model.Transaction;
+import com.example.account_service.model.dto.AccountMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -100,6 +102,7 @@ public class AccountRepoImpl implements AccountRepo {
             Map<String, Object> accountData = jdbcTemplate.queryForMap(sql, account_number);
             if (accountData != null && !accountData.isEmpty()) {
                 account = new Account();
+                account.setAccount_id((int) accountData.get("account_id"));
                 account.setAccount_number((String) accountData.get("account_number"));
                 account.setAccount_type((String) accountData.get("account_type"));
                 account.setBalance((BigDecimal) accountData.get("balance"));
@@ -173,6 +176,39 @@ public class AccountRepoImpl implements AccountRepo {
         }catch (DataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<Account> findByAccountType(String savings) {
+        try {
+            String sql = "SELECT * FROM accounts WHERE account_type = ?";
+            return jdbcTemplate.query(sql, new Object[]{savings}, new AccountMapper());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+
+    }
+
+    @Override
+    public void updateAccountBalance(Account account) {
+        try {
+            String sql = "UPDATE accounts SET balance = ?, updated_at = ? WHERE account_id = ?";
+            Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
+            jdbcTemplate.update(sql, account.getBalance(), updatedAt,account.getAccount_id());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void saveTransaction(Transaction transaction) {
+        String sql = "INSERT INTO transaction (account_id, source, transaction_type, amount, created_at) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, transaction.getAccount_id(), transaction.getSource(),
+                transaction.getTransaction_type(), transaction.getAmount(),
+                transaction.getCreated_at());
     }
 
 

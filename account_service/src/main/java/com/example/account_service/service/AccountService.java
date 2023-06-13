@@ -1,12 +1,15 @@
 package com.example.account_service.service;
 
 import com.example.account_service.model.Account;
+import com.example.account_service.model.Transaction;
 import com.example.account_service.model.dto.TransactionDto;
 import com.example.account_service.repo.AccountRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -71,7 +74,7 @@ public class AccountService {
         }
     }
 
-
+    @Transactional
     public String transaction(TransactionDto transactionDto) {
         try {
             Account account = accountRepo.searchAccount(transactionDto.getAccount_number());
@@ -80,11 +83,13 @@ public class AccountService {
                     if (transactionDto.getTranType().equals("deposit")) {
                         BigDecimal balance = account.getBalance().add(transactionDto.getAmount());
                         accountRepo.updateDepositBalance(transactionDto.getAccount_number(), balance);
+                        saveTransactionRecord(account.getAccount_id(), "Deposit", transactionDto.getAmount());
                         return "deposit successfully";
                     } else {
                         if (transactionDto.getAmount().compareTo(account.getBalance()) <= 0) {
                             BigDecimal balance = account.getBalance().subtract(transactionDto.getAmount());
                             accountRepo.updateDepositBalance(transactionDto.getAccount_number(), balance);
+                            saveTransactionRecord(account.getAccount_id(), "Withdrawal", transactionDto.getAmount());
                             return "withdraw successfully";
                         } else {
                             return "insufficient balance";
@@ -116,7 +121,7 @@ public class AccountService {
                         return "payment success";
 
                     }
-                }else {
+                } else {
                     return "Please enter savings account";
                 }
 
@@ -130,4 +135,39 @@ public class AccountService {
     }
 
 
+    public void calculateInterest() {
+        //search all savings accounts
+        List<Account> savingsAccounts = accountRepo.findByAccountType("saving");
+
+        for (Account account : savingsAccounts) {
+            BigDecimal currentBalance = account.getBalance();
+            BigDecimal interestAmount = currentBalance.multiply(BigDecimal.valueOf(0.05));
+            BigDecimal updatedBalance = currentBalance.add(interestAmount);
+            account.setBalance(updatedBalance);
+
+            accountRepo.updateAccountBalance(account);
+
+            // Add transaction record
+            Transaction transaction = new Transaction();
+            transaction.setAccount_id(account.getAccount_id());
+            transaction.setSource("Interest Calculation");
+            transaction.setTransaction_type("Interest");
+            transaction.setAmount(interestAmount);
+            transaction.setCreated_at(LocalDateTime.now());
+
+            // Save the transaction
+            accountRepo.saveTransaction(transaction);
+        }
+    }
+
+    private void saveTransactionRecord(int accountNumber, String transactionType, BigDecimal amount) {
+        Transaction transaction = new Transaction();
+        transaction.setAccount_id(accountNumber);
+        transaction.setTransaction_type(transactionType);
+        transaction.setAmount(amount);
+        transaction.setSource("Transactions");
+        transaction.setCreated_at(LocalDateTime.now());
+
+        accountRepo.saveTransaction(transaction);
+    }
 }

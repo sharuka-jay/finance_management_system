@@ -1,6 +1,7 @@
 package com.example.account_service.repo;
 
 import com.example.account_service.model.Account;
+import com.example.account_service.model.Transaction;
 import com.example.account_service.model.dto.TransactionDto;
 
 import java.math.BigDecimal;
@@ -22,4 +23,10 @@ public interface AccountRepo {
     List<Account> getUserAccounts(int user_id);
 
     Account getUserAccount(String account_number);
+
+    List<Account> findByAccountType(String savings);
+
+    void updateAccountBalance(Account account);
+
+    void saveTransaction(Transaction transaction);
 }

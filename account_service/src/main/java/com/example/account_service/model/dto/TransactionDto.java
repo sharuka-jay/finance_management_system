@@ -13,4 +13,5 @@ public class TransactionDto {
     private String tranType;
     private BigDecimal amount;
     private int user_id;
+    private int account_id;
 }

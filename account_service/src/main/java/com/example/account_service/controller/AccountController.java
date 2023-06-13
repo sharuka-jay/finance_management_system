@@ -6,6 +6,7 @@ import com.example.account_service.repo.AccountRepo;
 import com.example.account_service.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,5 +95,14 @@ public class AccountController {
         }
     }
 
+    /************      calculate interest and add it     *****/
+   @GetMapping("interest")
+    public void calculateInterest() {
+        try {
+            accountService.calculateInterest();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -29,4 +29,6 @@ public interface AccountRepo {
     void updateAccountBalance(Account account);
 
     void saveTransaction(Transaction transaction);
+
+    List<Transaction> tranList(int user_id);
 }

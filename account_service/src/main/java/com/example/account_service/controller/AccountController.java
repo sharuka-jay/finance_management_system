@@ -1,11 +1,13 @@
 package com.example.account_service.controller;
 
 import com.example.account_service.model.Account;
+import com.example.account_service.model.Transaction;
 import com.example.account_service.model.dto.TransactionDto;
 import com.example.account_service.repo.AccountRepo;
 import com.example.account_service.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -95,13 +97,29 @@ public class AccountController {
         }
     }
 
+    /*** view ttrans for selected account  ***/
+
+    @PostMapping("/viewTrans")
+    public List<Transaction> viewTransForSelectedAccounts(@RequestBody TransactionDto transactionDto) {
+        try {
+            List<Transaction> trans = accountRepo.tranList(transactionDto.getAccount_id());
+            return trans;
+
+
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     /************      calculate interest and add it     *****/
    @GetMapping("interest")
-    public void calculateInterest() {
+    public String calculateInterest() {
         try {
-            accountService.calculateInterest();
+            int count = accountService.calculateInterest();
+            return "interest calculated for  "+ count + " accounts";
         } catch (Exception e) {
             e.printStackTrace();
+            return "Failed to calculate interest";
         }
     }
 

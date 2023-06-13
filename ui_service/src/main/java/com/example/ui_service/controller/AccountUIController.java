@@ -1,6 +1,7 @@
 package com.example.ui_service.controller;
 
 import com.example.account_service.model.Account;
+import com.example.account_service.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -315,6 +316,39 @@ public class AccountUIController {
                 return "viewFixedAccount";
             }
             return "savingBalance";
+        } catch (Exception e) {
+            return "404";
+        }
+    }
+
+
+
+    /*****   view transactons for select account    ***/
+    @GetMapping("/viewalltran/{id}")
+    public String viewTranPage(@PathVariable int id, Model model) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Create the request entity with the parameters and headers
+            HttpEntity<Object> requestEntity = new HttpEntity<>(Map.of("account_id", id), headers);
+
+
+            ResponseEntity<List<Transaction>> responseEntity = restTemplate.exchange(
+                    "http://localhost:7079/viewTrans",
+                    HttpMethod.POST,
+                    requestEntity,
+                    new ParameterizedTypeReference<List<Transaction>>() {
+                    }
+            );
+            // Assuming the response contains the new saving account ID
+            List<Transaction> accounts = responseEntity.getBody();
+
+            if (accounts != null && !accounts.isEmpty()) {
+                model.addAttribute("account", accounts);
+            }
+            return "viewAllTransactions";
+
         } catch (Exception e) {
             return "404";
         }

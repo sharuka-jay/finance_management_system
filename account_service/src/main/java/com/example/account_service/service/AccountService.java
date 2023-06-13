@@ -135,9 +135,10 @@ public class AccountService {
     }
 
 
-    public void calculateInterest() {
+    public int calculateInterest() {
         //search all savings accounts
         List<Account> savingsAccounts = accountRepo.findByAccountType("saving");
+        int count = 0;
 
         for (Account account : savingsAccounts) {
             BigDecimal currentBalance = account.getBalance();
@@ -157,7 +158,9 @@ public class AccountService {
 
             // Save the transaction
             accountRepo.saveTransaction(transaction);
+            count++;
         }
+        return count;
     }
 
     private void saveTransactionRecord(int accountNumber, String transactionType, BigDecimal amount) {

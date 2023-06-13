@@ -33,11 +33,12 @@
                                         <td th:text="${account.account_type}"></td>
                                         <td th:text="Rs. + ${account.balance}"></td>
                                         <td>
-                                            <!--                                        <a th:href="@{/account/edit/{id}(id=${account.accountId})}"-->
-                                            <!--                                           class="btn btn-primary">View</a>-->
+
                                             <div th:if="${account.account_type == 'saving'}">
                                                 <a th:href="@{/account/edit/{id}(id=${account.account_number})}"
                                                    class="btn btn-primary">View Balance</a>
+                                                <a th:href="@{/viewalltran/{id}(id=${account.account_id})}"
+                                                   class="btn btn-primary">View Trans</a>
                                                 <!--                                            <a th:href="@{/account/edit/{id}(id=${account.account_number})}"-->
                                                 <!--                                               class="btn btn-primary">Tranfer</a>-->
 

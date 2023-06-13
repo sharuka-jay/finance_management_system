@@ -3,6 +3,7 @@ package com.example.account_service.repo;
 import com.example.account_service.model.Account;
 import com.example.account_service.model.Transaction;
 import com.example.account_service.model.dto.AccountMapper;
+import com.example.account_service.model.dto.TransactionRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -139,6 +140,7 @@ public class AccountRepoImpl implements AccountRepo {
                         Account account = new Account();
                         account.setAccount_number(rs.getString("account_number"));
                         account.setUser_id(rs.getInt("user_id"));
+                        account.setAccount_id(rs.getInt("account_id"));
                         account.setBalance(rs.getBigDecimal("balance"));
                         account.setTime_period(rs.getInt("time_period"));
                         account.setAccount_type(rs.getString("account_type"));
@@ -209,6 +211,13 @@ public class AccountRepoImpl implements AccountRepo {
         jdbcTemplate.update(sql, transaction.getAccount_id(), transaction.getSource(),
                 transaction.getTransaction_type(), transaction.getAmount(),
                 transaction.getCreated_at());
+    }
+
+    @Override
+    public List<Transaction> tranList(int user_id) {
+        String sql = "SELECT * FROM transaction WHERE account_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{user_id}, new TransactionRowMapper());
+
     }
 
 

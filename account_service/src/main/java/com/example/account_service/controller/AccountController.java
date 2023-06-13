@@ -5,6 +5,8 @@ import com.example.account_service.model.Transaction;
 import com.example.account_service.model.dto.TransactionDto;
 import com.example.account_service.repo.AccountRepo;
 import com.example.account_service.service.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,6 +25,9 @@ public class AccountController {
     AccountService accountService;
     @Autowired
     AccountRepo accountRepo;
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
+
 
     @PostMapping("/savingaccounts")
     public String saveSavingAccount(@RequestBody Account acount) {
@@ -116,6 +121,7 @@ public class AccountController {
     public String calculateInterest() {
         try {
             int count = accountService.calculateInterest();
+            logger.info("interest calculated for  "+ count + " accounts");
             return "interest calculated for  "+ count + " accounts";
         } catch (Exception e) {
             e.printStackTrace();

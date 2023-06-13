@@ -5,6 +5,8 @@ import com.example.account_service.model.Transaction;
 import com.example.account_service.model.dto.TransactionDto;
 import com.example.account_service.repo.AccountRepo;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,9 @@ import java.util.Random;
 public class AccountService {
     @Autowired
     private AccountRepo accountRepo;
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
+
 
     public void saveAccount(Account acount) {
         String accountNumber = generateRandomAccountNumber();

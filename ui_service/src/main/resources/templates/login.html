@@ -20,17 +20,14 @@
                             <form th:action="@{/login}" th:object="${user}" method="POST" class="mx-1 mx-md-4">
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form3Example1cg">Your Name</label>
-                                    <input type="text" th:name="user_name" id="form3Example1cg" class="form-control form-control-lg"/>
+                                    <input type="text" th:name="user_name" id="form3Example1cg"
+                                           class="form-control form-control-lg" required/>
                                 </div>
 
-<!--                                <div class="form-outline mb-4">-->
-<!--                                    <label class="form-label" for="form3Example3cg">Your Email</label>-->
-<!--                                    <input type="email" id="form3Example3cg" class="form-control form-control-lg"/>-->
-<!--                                </div>-->
 
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form3Example4cg">Password</label>
-                                    <input type="password" th:name="password" id="form3Example4cg"
+                                    <input type="password" th:name="password" id="form3Example4cg" required
                                            class="form-control form-control-lg"/>
                                 </div>
                                 <div th:if="${param.error}">

@@ -22,7 +22,7 @@
                 <div class="form-outline mb-4">
                   <label class="form-label" for="form3Example3cg">Account Number</label>
                   <input type="text" id="form3Example3cg" class="form-control form-control-lg" disabled
-                         th:value="*{accountId}"/>
+                         th:value="*{account_number}"/>
                 </div>
 
 <!--                <div class="form-outline mb-4">-->
@@ -34,13 +34,13 @@
                 <div class="form-outline mb-4">
                   <label class="form-label" for="mdate">Maturity Date</label>
                   <input type="text" id="mdate" class="form-control form-control-lg" disabled
-                         th:value="*{#dates.format(createdDate,'dd MMMM yyyy')}"/>
+                         th:field="*{created_at}" th:value="${#temporals.format(created_at, 'MM/dd/yy')}"/>
                 </div>
 
                 <div class="form-outline mb-4">
                   <label class="form-label" for="balance">Interest Earned</label>
                   <input type="text" id="balance" class="form-control form-control-lg" disabled
-                         th:name="initialAmount" th:value="*{initialAmount}"/>
+                         th:name="initialAmount" th:value="*{balance}"/>
                 </div>
 
               </form>

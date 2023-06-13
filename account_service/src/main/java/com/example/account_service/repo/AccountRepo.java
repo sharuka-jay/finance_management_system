@@ -20,4 +20,6 @@ public interface AccountRepo {
     void updateDepositBalance(String account_number, BigDecimal balance);
 
     List<Account> getUserAccounts(int user_id);
+
+    Account getUserAccount(String account_number);
 }

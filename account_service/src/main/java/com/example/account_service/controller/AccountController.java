@@ -81,5 +81,18 @@ public class AccountController {
         }
     }
 
+    /**  search account to display home  */
+    @PostMapping("/seachAccount")
+    public Account searchAccount(@RequestBody TransactionDto transactionDto) {
+        try {
+            Account account = accountRepo.getUserAccount(transactionDto.getAccount_number());
+            return account;
+
+
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
 
 }

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +43,8 @@ public class AccountRepoImpl implements AccountRepo {
     public void saveLoanAccount(Account account) {
         try {
             String sql = "INSERT INTO accounts ( account_number, account_type,user_id, balance, created_at,time_period) VALUES ( ?,?, ?, ?, ?, ?);";
-            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            Date currentDate = new Date();
+            Timestamp createdAt = new Timestamp(currentDate.getTime());
             jdbcTemplate.update(sql
                     , account.getAccount_number()
 //                , account.getAccount_name()
@@ -60,7 +63,10 @@ public class AccountRepoImpl implements AccountRepo {
     public void saveFixedAccount(Account account) {
         try {
             String sql = "INSERT INTO accounts ( account_number, account_type,user_id, balance, created_at,time_period) VALUES ( ?,?, ?, ?, ?, ?);";
-            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+//            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            LocalDateTime createdAt = LocalDateTime.now();
+            LocalDateTime lockDate = createdAt.plusMonths(account.getTime_period());
+
             jdbcTemplate.update(sql
                     , account.getAccount_number()
 //                , account.getAccount_name()
@@ -140,6 +146,32 @@ public class AccountRepoImpl implements AccountRepo {
             return accounts;
         } catch (DataAccessException e) {
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public Account getUserAccount(String account_number) {
+        String sql = "SELECT * FROM accounts WHERE account_number = ?";
+
+        try {
+            Account account = jdbcTemplate.queryForObject(
+                    sql,
+                    new Object[]{account_number},
+                    (rs, rowNum) -> {
+                        Account acc = new Account();
+                        acc.setAccount_number(rs.getString("account_number"));
+                        acc.setUser_id(rs.getInt("user_id"));
+                        acc.setBalance(rs.getBigDecimal("balance"));
+                        acc.setTime_period(rs.getInt("time_period"));
+                        acc.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
+                        acc.setAccount_type(rs.getString("account_type"));
+                        return acc;
+                    }
+            );
+
+            return account;
+        }catch (DataAccessException e) {
+            return null;
         }
     }
 

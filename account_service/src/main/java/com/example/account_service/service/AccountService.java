@@ -30,13 +30,34 @@ public class AccountService {
 
     public void saveLoanAccount(Account acount) {
         String accountNumber = generateRandomAccountNumber();
+
+        // Calculate interest
+        BigDecimal interestRate = new BigDecimal("0.05"); // interest rate of 5%
+        int timePeriodInMonths = acount.getTime_period();
+        BigDecimal balance = acount.getBalance();
+        BigDecimal interest = balance.multiply(interestRate).multiply(new BigDecimal(timePeriodInMonths));
+
+        // Add interest to balance
+        BigDecimal updatedBalance = balance.add(interest);
+
+        acount.setBalance(updatedBalance);
         acount.setAccount_number(accountNumber);
         accountRepo.saveLoanAccount(acount);
     }
 
     public void saveFixedAccount(Account acount) {
+        // Calculate interest
+        BigDecimal interestRate = new BigDecimal("0.05"); // interest rate of 5%
+        int timePeriodInMonths = acount.getTime_period();
+        BigDecimal balance = acount.getBalance();
+        BigDecimal interest = balance.multiply(interestRate).multiply(new BigDecimal(timePeriodInMonths));
+
+        // Add interest to balance
+        BigDecimal updatedBalance = balance.add(interest);
+
         String accountNumber = generateRandomAccountNumber();
         acount.setAccount_number(accountNumber);
+        acount.setBalance(updatedBalance);
         accountRepo.saveFixedAccount(acount);
     }
 
